@@ -1,5 +1,5 @@
 ﻿/*
- Author: Zaid Rojas
+ Author: Zaid Nemesis Rojas
  Course: COMP-003A
  Faculty: Jonathan Cruz
  Purpose: Inventory management application with a minimum of 10
