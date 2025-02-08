@@ -1,5 +1,5 @@
 ﻿/*
- Author: Zaid Nemesis Rojas
+ Author: Zaid Rojas
  Course: COMP-003A
  Faculty: Jonathan Cruz
  Purpose: Inventory management application with a minimum of 10
@@ -13,6 +13,90 @@ namespace COMP003A.CodingAssignment4
 {
     internal class Program
     {
+        static void AddingProduct(ref string[] name_array, ref int[] quantity_array, ref int array_length)
+        {
+            int val; // value of product to be added
+
+            if (array_length == 10) // Should the Array Be Full
+            {
+                Console.WriteLine("Inventory is full. Cannot add more products!");
+                return;
+            }
+
+            Console.Write("\nEnter Product Name: ");
+            var _name = Console.ReadLine();
+            Console.Write("Enter Product Quantity: ");
+            try
+            {
+                val = int.Parse(Console.ReadLine());
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Please enter a valid int value.");
+                return;
+            }
+
+            name_array[array_length] = _name.ToLower();
+            quantity_array[array_length] = val;
+            array_length++;
+
+
+            Console.WriteLine("Product Added Successfully!\n");
+        }
+
+        static void UpdateProduct(ref string[] array_name, ref int[] array_quantity)
+        {
+            string find_product;
+            int new_amount;
+
+            Console.Write("\nEnter Product Name: ");
+            find_product = Console.ReadLine().ToLower();
+
+            int location = Array.IndexOf(array_name, find_product);
+            if (location < 0)
+            {
+                Console.WriteLine($"Item {find_product} is not in list.\n");
+                return;
+            }
+            else
+            {
+                Console.Write($"Enter the current quantity of the {find_product}: ");
+                new_amount = int.Parse(Console.ReadLine());
+                array_quantity[location] = new_amount;
+                Console.WriteLine("Update Successful!\n");
+            }
+            
+
+        }
+
+        static void InventorySummary(ref string[] array_name, ref int[] array_quantity, ref int array_length)
+        {
+            int total_prod = 0;
+            int total_quant = 0;
+
+            Console.WriteLine("\nInventory Summary: ");
+
+            for (var i = 0; i < array_length; i++)
+            {
+                Console.WriteLine($"- {array_name[i]} {array_quantity[i]}");
+                total_prod++;
+                total_quant += array_quantity[i];
+            }
+
+            Console.WriteLine($"Total Products: {total_prod}");
+            Console.WriteLine($"Total Quantity: {total_quant}");
+            try
+            {
+                Console.WriteLine($"Average Quantity: {total_quant / total_prod}");
+            }
+            catch (DivideByZeroException)
+            {
+                Console.WriteLine("You attempted to divide by 0.\n");
+                return;
+            }
+        }
+
+
         static void Main(string[] args)
         {
                 int prod_choice; // Decides how the arrays or lists will be edited
@@ -50,8 +134,9 @@ namespace COMP003A.CodingAssignment4
                                 case 1:
                                     return "Arrays";
                                 case 2:
-                                    return "Lists";
-                                default:
+                                    Console.WriteLine("Program currently has no lists support.\n");
+                                    continue;
+                            default:
                                     Console.WriteLine("**Enter either numbers 1 or 2.**\n");
                                     continue;
                             }
@@ -86,123 +171,20 @@ namespace COMP003A.CodingAssignment4
                             continue;
                         }
 
-
+                        
+                        // Deciding how the ARRAYS will be handled
                         switch (prod_choice)
                         {
                             case 1: // Adding product
-                                int val; // value of product to be added
-
-                                if (array_len == 10) // Should the Array Be Full
-                                {
-                                    Console.WriteLine("Inventory is full. Cannot add more products!");
-                                    break;
-                                }
-
-                                Console.Write("\nEnter Product Name: ");
-                                var _name = Console.ReadLine();
-                                Console.Write("Enter Product Quantity: ");
-                                try
-                                {
-                                    val = int.Parse(Console.ReadLine());
-                                }
-                                catch (Exception)
-                                {
-                                    Console.WriteLine("Please enter a valid int value.");
-                                    continue;
-                                }
-
-
-                                if (handling == "Arrays")
-                                {
-                                    prod_array_name[array_len] = _name.ToLower();
-                                    prod_array_quantity[array_len] = val;
-                                    array_len++;
-                                }
-                                else
-                                {
-                                    prod_list_name.Add(_name.ToLower());
-                                    prod_list_quantity.Add(val);
-                                }
-
-                                Console.WriteLine("Product Added Successfully!\n");
+                                AddingProduct(ref prod_array_name, ref prod_array_quantity, ref array_len);
                                 break;
 
                             case 2: // Updating Product Quantity
-                                string find_product;
-                                int new_amount;
-
-                                Console.Write("\nEnter Product Name: ");
-                                find_product = Console.ReadLine().ToLower();
-
-                                if (handling == "Arrays")
-                                {
-                                    int location = Array.IndexOf(prod_array_name, find_product);
-                                    if (location < 0)
-                                    {
-                                        Console.WriteLine($"Item {find_product} is not in list.\n");
-                                        continue;
-                                    }
-                                    else
-                                    {
-                                        Console.Write($"Enter the current quantity of the {find_product}: ");
-                                        new_amount = int.Parse(Console.ReadLine());
-                                        prod_array_quantity[location] = new_amount;
-                                        Console.WriteLine("Update Successful!\n");
-                                    }
-                                }
-                                else
-                                {
-                                    int location = prod_list_name.IndexOf(find_product);
-                                    if (location < 0)
-                                    {
-                                        Console.WriteLine($"Item {find_product} is not in list.\n");
-                                        continue;
-                                    }
-                                    else
-                                    {
-                                        Console.Write($"Enter the current quantity of the {find_product}: ");
-                                        new_amount = int.Parse(Console.ReadLine());
-                                        prod_list_quantity[location] = new_amount;
-                                        Console.WriteLine("Update Successful!\n");
-                                    }
-                                }
-
+                                UpdateProduct(ref prod_array_name, ref prod_array_quantity);
                                 break;
 
                             case 3: // View Inventory Summary
-                                int total_prod = 0;
-                                int total_quant = 0;
-
-                                Console.WriteLine("\nInventory Summary: ");
-                                if (handling == "Arrays")
-                                {
-                                    for (var i = 0; i < array_len; i++)
-                                    {
-                                        Console.WriteLine($"- {prod_array_name[i]} {prod_array_quantity[i]}");
-                                        total_prod++;
-                                        total_quant += prod_array_quantity[i];
-                                    }
-                                }
-                                else
-                                {
-                                    for (var i = 0; i < prod_list_name.Count; i++)
-                                    {
-                                        Console.WriteLine($"- {prod_list_name[i]} {prod_list_quantity[i]}");
-                                        total_prod++;
-                                        total_quant += prod_list_quantity[i];
-                                    }
-                                }
-                                Console.WriteLine($"Total Products: {total_prod}");
-                                Console.WriteLine($"Total Quantity: {total_quant}");
-                                try
-                                {
-                                    Console.WriteLine($"Average Quantity: {total_quant / total_prod}");
-                                }
-                                catch (DivideByZeroException)
-                                {
-                                    Console.WriteLine("You attempted to divide by 0.\n");
-                                    continue;
-                                }
+                                InventorySummary(ref prod_array_name, ref prod_array_quantity, ref array_len);
                                 break;
 
                             case 4: // Exit the Program
